@@ -1,0 +1,1 @@
+/Applications/Mitsuba.app/Contents/MacOS/mitsuba mitsuba_scene.xml

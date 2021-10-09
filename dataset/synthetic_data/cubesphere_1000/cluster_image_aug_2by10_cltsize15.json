@@ -1,0 +1,302 @@
+[
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_000",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_000/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.0,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_016",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_016/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.016,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_034",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_034/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.034,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_058",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_058/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.058,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_076",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_076/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.076,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_092",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_092/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.092,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_111",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_111/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.111,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_130",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_130/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.13,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_152",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_152/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.152,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_174",
+        "model_path": "CubeSphere_interp_1000/instance_000/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_174/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_000/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.174,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_996",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_996/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.997,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_974",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_974/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.975,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_952",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_952/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.953,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_932",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_932/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.933,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_909",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_909/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.91,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_888",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_888/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.889,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_858",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_858/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.859,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_837",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_837/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.838,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_808",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_808/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.809,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "dir_path": "CubeSphere_interp_1000/instance_785",
+        "model_path": "CubeSphere_interp_1000/instance_996/model.obj",
+        "isometric_path": "CubeSphere_interp_1000/instance_785/Isometric.png",
+        "ptcloud_path": "CubeSphere_interp_1000/instance_996/pt_1024.npy",
+        "cube_scale": 0.5,
+        "sphere_scale": 0.86,
+        "shapekey_value": 0.786,
+        "rot_val": 0,
+        "rot_axis": [
+            0,
+            0,
+            0
+        ]
+    }
+]
