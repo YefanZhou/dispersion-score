@@ -9,7 +9,6 @@ scikit-image==0.17.2
 scikit-learn==0.23.2
 scipy==1.5.2
 tensorboardX==2.1
-tensorboard==2.3.0
 tqdm==4.50.2
 trimesh==2.38.39
 easydict==1.9
@@ -24,6 +23,7 @@ pyntcloud==0.1.2
 pyrender
 community
 glob
+gdown
 torchsummary
 gpustat==0.6.0
 easydict
@@ -32,7 +32,6 @@ matplotlib
 ninja
 tornado
 urllib3
-visdom
 websocket-client
 termcolor
 https://github.com/PyMesh/PyMesh/releases/download/v0.2.1/pymesh2-0.2.1-cp36-cp36m-linux_x86_64.whl

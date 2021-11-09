@@ -1,55 +1,55 @@
 # dispersion-score
 
-## Introduction
+
 
 Official implementation of our 3DV Paper *A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks* 
 
-## Setup
+## Installation
+
+To install dispersion-score and develop locally:
+
+- PyTorch version >= 1.6.0
+- Python version = 3.6
 
 ```bash
-virtualenv -p python3.6 svrds_venv
-source svrds_venv/bin/activate
-chmod +x setup.sh download_data.sh
-# Setup environment 
-./setup.sh
-# Download ShapeNet dataset.
-./download_data.sh
+git clone https://github.com/YefanZhou/dispersion-score.git
+cd dispersion-score
+chmod +x setup.sh 
 ```
 
 ------
 
-## Experiments on Synthetic datasets:
+## Dataset
 
-### Building Synthetic dataset (Interpolation between cube and sphere) 
-
-1. **Mesh generation**
-
-   Ubuntu 18.04, Install blender 2.79.
-
-   Open **dataset/synthetic_data/cube_shpere_interpolation.blend** from screen. Run the script.
-
-2. **Pointcloud sampling**
+Synthetic dataset: you may download our provided data or build it yourself.
 
 ```bash
-cd dataset/synthetic_data
-python pointcloud_sample.py
+bash dataset/download_synthetic_data.sh
 ```
+
+ShapeNet V1: [pointclouds](https://drive.google.com/file/d/1MMCYOqSalz77dduKahqDEQKFP9aCvUCy/view?usp=sharing), [renderings](https://drive.google.com/file/d/153nd1oUd5ONnP8AoXaU8IZunskd5LEvB/view?usp=sharing)  
+
+ShapeNet V1: customized renderings, you may download our provided data or build it yourself.
+
+Manually download the three files to main folder.
+
+```bash
+unzip ShapeNetV1PointCloud.zip -d ./dataset/data/
+unzip ShapeNetV1Renderings.zip -d ./dataset/data/
+unzip ShapeNetV1RenderingAnglelimit.zip -d ./dataset/data/
+```
+
+## Experiments on Synthetic datasets:
 
 ### Model Training 
 
-To train models on 16 train sets of  synthetic datasets. **( Section 4.2 )**
+To train models on 16 train sets of  synthetic datasets.
 
 ```bash
 python -m train_cmd.train_synthetic
 ```
 
-To monitor the training procedure
-
-```bash
-tensorboard --logdir "log/tensorboard/train_synthetic"
-```
-
-The checkpoints is saved to **"log/toydata/*/checkpoint.pt"** , predicted shapes of test set **"log/toydata/*/prediction.npy"**. 
+The checkpoints is saved to **"log/toydata/*/checkpoint.pt"** ,  predicted shapes of test set **"log/toydata/*/prediction.npy"**. 
 
 Each training takes 20 minitues and use 4.3GB GPU memory. 
 
@@ -59,53 +59,15 @@ Each training takes 20 minitues and use 4.3GB GPU memory.
 python -m eval_cmd.eval_ds_synthetic
 ```
 
-The input DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_1**", output DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_pred**"
+The input DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_1**", 
 
-
+The output DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_pred**"
 
 ------
 
 
 
 ## Experiments on ShapeNet:
-
-### Dataset:
-
-#### 	Download 3D R2N2 dataset:
-
-Download the dataset:
-
-```bash
-chmod +x download_data.sh
-./download_data.sh
-```
-
-#### 	Building extra image datasets with varying angle range of viewpoints
-
-To generate the dataset:
-
-- First download **ShapeNet v1** following the link: https://github.com/laughtervv/DISN#download-shapenetcorev1
-
-- Then Install blender 2.79 and use bundled-python pip install numpy and opencv. Follow the instructions here: 
-
-  https://blender.stackexchange.com/questions/56011/how-to-install-pip-for-blenders-bundled-python
-
-```bash
-wget https://www.blender.org/download/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2
-tar -xvf blender-2.79-linux-glibc219-x86_64.tar.bz2 /usr/local/
-
-## Install pip for blener's bundled python, and then use it install numpy and opencv
-/usr/local/blender-2.79-linux-glibc219-x86_64/2.79/python/local/lib/python3.5/dist-packages/pip install numpy opencv-python
-```
-
-- Then:
-
-```bash
-cd dataset/ShapenetRender_more_variation
-python blender_batch_angle_cmd.py --model_root_dir {ShapeNetV1 root dir} --blender_path /usr/local/blender-2.79b-linux-glibc219-x86_64/blender --render_root_dir ../data/ShapeNetV1RenderingAnglelimit
-```
-
-It takes about 21 hours to generate 7 image datasets. 
 
 ### Model Training and Measure Dispersion Score (DS)
 
@@ -136,13 +98,7 @@ python -m train_cmd.train_nviews
 python -m eval_cmd.eval_ds_nviews
 ```
 
-```bash
-## Monitor training 
-tensorboard --logdir log/tensorboard/more_imgs
-tensorboard --logdir log/tensorboard/more_shapes
-tensorboard --logdir log/tensorboard/nviews
-```
 
 
 
-**Complete codebase will release soon.**
+
