@@ -21,15 +21,15 @@ chmod +x setup.sh
 
 ## Dataset
 
-Synthetic dataset: you may download our provided data or build it yourself.
+Synthetic dataset: you may download the provided data or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/synthetic_data).
 
 ```bash
 bash dataset/download_synthetic_data.sh
 ```
 
-ShapeNet V1: [pointclouds](https://drive.google.com/file/d/1MMCYOqSalz77dduKahqDEQKFP9aCvUCy/view?usp=sharing), [renderings](https://drive.google.com/file/d/153nd1oUd5ONnP8AoXaU8IZunskd5LEvB/view?usp=sharing)  
+ShapeNet V1 (AtlasNet version): [pointclouds](https://drive.google.com/file/d/1MMCYOqSalz77dduKahqDEQKFP9aCvUCy/view?usp=sharing), [renderings](https://drive.google.com/file/d/153nd1oUd5ONnP8AoXaU8IZunskd5LEvB/view?usp=sharing)  
 
-ShapeNet V1: customized renderings, you may download our provided data or build it yourself.
+ShapeNet V1 customized renderings. You may download the provided data or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/data).
 
 Manually download the three files to main folder.
 
@@ -62,8 +62,6 @@ python -m eval_cmd.eval_ds_synthetic
 The input DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_1**", 
 
 The output DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_pred**"
-
-------
 
 
 
