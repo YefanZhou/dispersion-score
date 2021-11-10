@@ -2,7 +2,7 @@ import os
 import sys
 import signal
 sys.path.append('../')
-from training.gputracker import get_logger
+from training.gputracker import get_logger, DispatchThread
 ###################################################################################################
 #############################ShapeNet 13 Rendering Yaw Limit ######################################
 BASH_COMMAND_LIST = []

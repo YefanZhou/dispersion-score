@@ -1,4 +1,4 @@
-## 	Building ShapeNet rendering datasets with varying angle range of viewpoints
+## 	Build ShapeNet rendering datasets with varying angle range of viewpoints
 
 To generate the dataset:
 

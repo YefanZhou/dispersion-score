@@ -2,7 +2,13 @@ import os
 import sys
 import signal
 sys.path.append('../')
-from training.gputracker import get_logger
+from training.gputracker import get_logger, DispatchThread
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--gpus", narg='+', type=int, default=[0, 1], help="ids of gpu to use")
+args = parser.parse_args()
+
 BASH_COMMAND_LIST  = [] 
 logger = get_logger('log', 'schedule_train_synthetic.log')
 model = ('atlasnet', 'SPHERE', 1) 
@@ -61,14 +67,14 @@ for SEED in SEED_LIST:
                                 f"--description 'cluster_shape_aug_2by10_cltsize{cltsize:02}_seed{SEED}_BS{batch_size}_Epoch{epoch[0]}' ")
 
 
-for command in BASH_COMMAND_LIST:
-    
-    logger.info(f"Launching Experiments: {command}")
-    os.system(command)
+dispatch_thread = DispatchThread("synthetic dataset training", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=5)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
 
-    # sleep 5 seconds 
-    code = os.system('sleep 5')
+import time
+time.sleep(5)
 
-    if code == signal.SIGINT:
-        logger.info('Keyboard Interpret')
-        break
+logger.info("Exiting Main Thread")
+

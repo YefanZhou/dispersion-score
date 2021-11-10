@@ -1,4 +1,4 @@
-## Building Synthetic Dataset 
+## Build Synthetic Dataset 
 
 To build the synthetic data by yourself.
 

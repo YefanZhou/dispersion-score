@@ -21,7 +21,7 @@ chmod +x setup.sh
 
 ## Dataset
 
-Synthetic dataset: you may download the provided data or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/synthetic_data).
+Synthetic dataset: you may download the provided data as following or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/synthetic_data).
 
 ```bash
 bash dataset/download_synthetic_data.sh
@@ -29,7 +29,7 @@ bash dataset/download_synthetic_data.sh
 
 ShapeNet V1 (AtlasNet version): [pointclouds](https://drive.google.com/file/d/1MMCYOqSalz77dduKahqDEQKFP9aCvUCy/view?usp=sharing), [renderings](https://drive.google.com/file/d/153nd1oUd5ONnP8AoXaU8IZunskd5LEvB/view?usp=sharing)  
 
-ShapeNet V1 customized renderings. You may download the provided data or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/data).
+ShapeNet V1 [customized renderings](https://drive.google.com/file/d/1Y2nAktYbeRJ23bhjqZp3c4kh5P8oBYdp/view?usp=sharing). You may download the provided data as following or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/data).
 
 Manually download the three files to main folder.
 
@@ -43,15 +43,11 @@ unzip ShapeNetV1RenderingAnglelimit.zip -d ./dataset/data/
 
 ### Model Training 
 
-To train models on 16 train sets of  synthetic datasets.
+Train models on 16 train sets of synthetic datasets, each takes 20 minitues and use 4.3GB GPU memory.
 
 ```bash
-python -m train_cmd.train_synthetic
+python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
 ```
-
-The checkpoints is saved to **"log/toydata/*/checkpoint.pt"** ,  predicted shapes of test set **"log/toydata/*/prediction.npy"**. 
-
-Each training takes 20 minitues and use 4.3GB GPU memory. 
 
 ### Measure Dispersion Score (DS)
 
