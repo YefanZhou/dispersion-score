@@ -6,7 +6,7 @@ from training.gputracker import get_logger, DispatchThread
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--gpus", narg='+', type=int, default=[0, 1], help="ids of gpu to use")
+parser.add_argument("--gpus", nargs='+', type=int, default=[0, 1], help="ids of gpu to use")
 args = parser.parse_args()
 
 BASH_COMMAND_LIST  = [] 
