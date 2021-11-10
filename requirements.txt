@@ -21,7 +21,6 @@ scikit-learn-extra
 ipython
 pyntcloud==0.1.2
 pyrender
-glob
 gdown
 torchsummary
 gpustat==0.6.0
