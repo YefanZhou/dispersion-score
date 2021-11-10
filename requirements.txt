@@ -21,7 +21,6 @@ scikit-learn-extra
 ipython
 pyntcloud==0.1.2
 pyrender
-community
 glob
 gdown
 torchsummary
@@ -30,8 +29,5 @@ easydict
 joblib
 matplotlib
 ninja
-tornado
-urllib3
-websocket-client
 termcolor
 https://github.com/PyMesh/PyMesh/releases/download/v0.2.1/pymesh2-0.2.1-cp36-cp36m-linux_x86_64.whl

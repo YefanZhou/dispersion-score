@@ -12,9 +12,12 @@ To install dispersion-score and develop locally:
 - Python version = 3.6
 
 ```bash
+conda create -n dispersion_score python=3.6
+conda activate dispersion_score
 git clone https://github.com/YefanZhou/dispersion-score.git
 cd dispersion-score
 chmod +x setup.sh 
+./setup.sh
 ```
 
 ------
