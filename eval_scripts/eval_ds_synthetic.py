@@ -24,10 +24,10 @@ metric_dic = {'image': 'mse', 'points': 'chamfer'}
 SEED_LIST = '1'
 nsample=-1
 rsample=1
-c_method_list = 'KMedoids'          # KMedoids KMedoids
-e_method_list = 'Inertia'           # 
-cluster_k =     '2'                 # 
-perf_pc_list =  '0'                 #  
+c_method_list = 'KMedoids'          # AP        Hierarchical
+e_method_list = 'Inertia'           # Inertia   Inertia
+cluster_k =     '2'                 # 2         2
+perf_pc_list =  '0'                 # 4         0
 
 cltsize_lst = [1, 5, 10, 15, 20, 25, 30, 35]
 
@@ -107,9 +107,9 @@ SEED_LIST = '1'
 nsample=-1
 rsample=1
 c_method_list = 'KMedoids' # KMedoids KMedoids
-e_method_list = 'Inertia'    # 
-cluster_k =     '2'                         # 100 500
-perf_pc_list =  '0'                       #  0 0
+e_method_list = 'Inertia'  # 
+cluster_k =     '2'        #                
+perf_pc_list =  '0'        #               
 type = 'points'
 pred_batch_size = 64
 res_folder = 'checkpoints_pred'  # 'checkpoints_pred_lastepoch' checkpoints_pred_bestepoch

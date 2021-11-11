@@ -308,7 +308,7 @@ def cluster_eval(c_method, e_method, distance_matrix, seed=0, n_cluster=10, pc=5
     ---------------------
 
     c_method: string
-        choices: ['KMedoids', 'AP', 'OPTICS']
+        choices: ['KMedoids', 'AP', 'Hierarchical']
 
     e_method: string
         choices:['Inertia']
