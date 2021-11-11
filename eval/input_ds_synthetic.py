@@ -3,6 +3,7 @@
 import os
 import numpy as np
 import sys
+from numpy.lib.npyio import savez_compressed
 import torch
 import random
 import tqdm
@@ -196,8 +197,8 @@ for eval_label in eval_label_list:
                     f"Sum_of_Score: (mean: {ds_mean:.6f}|std: {ds_std:.6f})   "+ 
                     f"Dispersion Score: (mean: {avg_ds_mean:.6f}|std: {avg_ds_std:.6f})  "+ 
                     f"DM compute time {elasp_time:.2f} min")
-    
-np.savez_compredsed(os.path.join(res_path, f"stats_{opt.mode}_{opt.split}_{opt.type}_{opt.train_json_file.split('.')[0]}_numsample{sample_num}.npz"), **ds_collect)
+
+np.savez_compressed(os.path.join(res_path, f"stats_{opt.mode}_{opt.split}_{opt.type}_{opt.train_json_file.split('.')[0]}_numsample{sample_num}.npz"), **ds_collect)
 res_logger.info(f"###############END OF {opt.type} PIPELINE#################")
 
 
