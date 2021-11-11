@@ -68,7 +68,7 @@ for SEED in SEED_LIST:
 
 
 dispatch_thread = DispatchThread("synthetic dataset training", 
-                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=0)
 # Start new Threads
 dispatch_thread.start()
 dispatch_thread.join()

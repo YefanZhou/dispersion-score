@@ -150,7 +150,6 @@ def parser():
     #opt.dir_name = os.path.join(opt.dir_name, net_desc)
     my_utils.check_exist_or_mkdirs(opt.dir_name)
 
-    #opt.description = net_desc
 
     with open(os.path.join(opt.dir_name, 'opts.yaml'), 'w') as file:
         yaml.dump(dict(opt), file, default_flow_style=False, sort_keys=False)

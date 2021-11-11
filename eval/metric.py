@@ -9,7 +9,7 @@ import numpy as np
 from scipy.stats import gamma
 import torch.nn as nn
 from os.path import join
-from sklearn.cluster import AffinityPropagation,DBSCAN, OPTICS
+from sklearn.cluster import AffinityPropagation, AgglomerativeClustering
 from sklearn_extra.cluster import KMedoids 
 import sklearn.metrics as sk_metrics
 sys.path.append(join(os.path.dirname(os.path.abspath(__file__)), "../"))
@@ -17,11 +17,6 @@ from eval.vgg import Vgg16
 from auxiliary.my_utils import chunks
 if torch.cuda.is_available():
     import auxiliary.ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as dist_chamfer_3D
-
-def silhouette(matrix, partition):
-    part = [partition[i] for i in range(matrix.shape[0])]	
-    return sk_metrics.silhouette_score(matrix, part, metric='precomputed')
-
 
 def pairwise_distances(x, y=None):
     '''
@@ -301,66 +296,12 @@ def transform_mat(mat):
     np.fill_diagonal(mat, 0)
     return mat
 
-def silhouette_score_ap(distance_matrix, seed=0, pc=10, logger=None):
-    """calculate silhouette score based on precomputed distance matrix
+def transform_mat_std(mat, aff_diag=-1):
+    mat = -np.exp(mat/abs(np.std(mat)))
+    np.fill_diagonal(mat, aff_diag)
+    return mat
 
-    Params:
-    ------------------
-    distance_matrix: (N, N) numpy array
-        distance matrix to be calcuated  
-
-    result_path: str
-        directory to save 
-    
-    Returns:
-    ------------------
-    silhouette_score: float
-
-    """
-    ## normalize matrix   
-    distance_matrix_tr = transform_mat(distance_matrix)     # -e^(x/max(x)) then fill the diagonal with 0
-    part_preference = cal_pref(distance_matrix_tr, pc=pc)   # in increasing order, float number in last 10% position in this matrix
-    ### affinity propagation
-    #logger.info(f"percentile: {pc} %, part_preference: {part_preference:3f}")
-    matrix_part = get_partition(distance_matrix_tr, preference = part_preference, random_state=seed)
-
-    ## silhouette score
-    ss = silhouette(distance_matrix, matrix_part)
-    
-    return ss, matrix_part, part_preference
-
-def inertia_ap(distance_matrix, seed=0, pc=10, logger=None, normalize=False):
-    """calculate clustering score based on precomputed distance matrix
-
-    Params:
-    ------------------
-    distance_matrix: (N, N) numpy array
-        distance matrix to be calcuated  
-
-    result_path: str
-        directory to save 
-    
-    Returns:
-    ------------------
-    silhouette_score: float
-
-    """
-    ## normalize matrix   
-    distance_matrix_tr = transform_mat(distance_matrix)     # -e^(x/max(x)) then fill the diagonal with 0
-    part_preference = cal_pref(distance_matrix_tr, pc=pc)   # in increasing order, float number in last 10% position in this matrix
-    ### affinity propagation
-    matrix_part = get_partition(distance_matrix_tr, preference=part_preference, random_state=seed)
-    label_to_cd_index, label_to_cd_dis, label_to_index = get_cluster_centroid(distance_matrix, matrix_part, normalize=normalize)
-
-    inertia = sum(label_to_cd_dis.values())
-
-    if normalize:
-        inertia = inertia / len(label_to_cd_index)
-
-    return inertia, matrix_part, part_preference
-
-
-def cluster_eval(c_method, e_method, distance_matrix, seed=0, n_cluster=10, pc=50, mean=False):
+def cluster_eval(c_method, e_method, distance_matrix, seed=0, n_cluster=10, pc=50, mean=False, aff_diag=-1):
     """calculate clustering score based on specific clustering method and evaluation score
 
     Params:
@@ -380,21 +321,19 @@ def cluster_eval(c_method, e_method, distance_matrix, seed=0, n_cluster=10, pc=5
     
     if c_method == 'AP':
         # Affinity Propagation
-        # normalize matrix and convert to affinity matrix negative      
-        distance_matrix_tr = transform_mat(distance_matrix)     # -e^(x/max(x)) then fill the diagonal with 0
-        part_preference = cal_pref(distance_matrix_tr, pc=pc)   # in increasing order, float number in last pc% position in this matrix
+        distance_matrix_tr = transform_mat_std(distance_matrix, aff_diag=aff_diag)     # -e^(x/std(x)) then fill the diagonal with aff_diag
+        part_preference = cal_pref(distance_matrix_tr, pc=pc)                          # in increasing order, float number in last pc% position in this matrix
         matrix_part = get_partition(distance_matrix_tr, preference=part_preference, random_state=seed)
+
     elif c_method == 'KMedoids':
         # KMedoids
         kmedoids = KMedoids(n_clusters=n_cluster, 
                     random_state=seed, metric='precomputed', init='k-medoids++').fit(distance_matrix)
         matrix_part = kmedoids.labels_
 
-    elif c_method == 'OPTICS':
-        #print(distance_matrix)
-        optics = OPTICS(metric='precomputed', min_samples=0.1).fit(distance_matrix)
-        matrix_part = optics.labels_
-        print(matrix_part)
+    elif c_method == 'Hierarchical':
+        clustering = AgglomerativeClustering(affinity='precomputed', n_clusters=n_cluster, linkage='complete').fit(distance_matrix) # average complete
+        matrix_part = clustering.labels_
 
     if e_method == 'Inertia':
         if c_method != 'KMedoids':
@@ -416,7 +355,7 @@ def inertia(distance_matrix, matrix_part):
     distance_matrix:
     matrix_part:
     """
-    label_to_cd_index, label_to_cd_dis, label_to_index = \
+    _, label_to_cd_dis, _ = \
                     get_cluster_centroid(distance_matrix, matrix_part)
 
     inertia = sum(label_to_cd_dis.values())
@@ -447,32 +386,6 @@ def get_cluster_centroid(distance_matrix, matrix_part):
         label_to_cd_dis.update({label: centroid_dis})
 
     return label_to_cd_index, label_to_cd_dis, label_to_index
-
-
-def DaviesBouldin(distance_matrix, matrix_part):
-
-    label_to_cd_index, label_to_cd_dis, label_to_index = get_cluster_centroid(distance_matrix, matrix_part)
-    # calculate cluster dispersion
-    S = {}
-    for label in label_to_index:
-        S.update({label: np.mean([distance_matrix[index, label_to_cd_index[label]] for index in label_to_index[label]])}) 
-    
-    Ri = []
-    for label in label_to_index:
-        Rij = []
-        # establish similarity between each cluster and all other clusters
-        for other_label in label_to_index:
-            if other_label != label:
-                r = (S[label] + S[other_label]) / distance_matrix[label_to_cd_index[label], label_to_cd_index[other_label]]
-                Rij.append(r)
-         # select Ri value of most similar cluster
-        Ri.append(max(Rij)) 
-    # get mean of all Ri values    
-    dbi = np.mean(Ri)
-
-    return dbi
-
-
 
 class ChamferDistanceL2(nn.Module):
     def __init__(self):
@@ -512,75 +425,6 @@ def pairwise_distances_torch(x, y=None):
     return matrix
 
 
-def rbf_dot_mat(dismat, deg):
-	H = dismat
-
-	H = np.exp(-H/2/(deg**2))
-
-	return H
-
-
-def hsic_gam_mat(dismat1, dismat2, alph = 0.5):
-	"""
-	X, Y are numpy vectors with row - sample, col - dim
-	alph is the significance level
-	auto choose median to be the kernel width
-	"""
-	n = dismat1.shape[0]
-
-	# ----- width of X -----
-
-	dists = dismat1
-	dists = dists - np.tril(dists)
-	dists = dists.reshape(n**2, 1)
-	
-
-	width_x = np.sqrt( 0.5 * np.median(dists[dists>0]) )
-	# ----- -----
-
-	# ----- width of X -----
-
-	
-	dists = dismat2
-	dists = dists - np.tril(dists)
-	dists = dists.reshape(n**2, 1)
-	
-	width_y = np.sqrt( 0.5 * np.median(dists[dists>0]) )
-	# ----- -----
-
-	bone = np.ones((n, 1), dtype = float)
-	H = np.identity(n) - np.ones((n,n), dtype = float) / n
-
-	K = rbf_dot_mat(dismat1, width_x)
-	L = rbf_dot_mat(dismat2, width_y)
-
-	Kc = np.dot(np.dot(H, K), H)
-	Lc = np.dot(np.dot(H, L), H)
-
-	testStat = np.sum(Kc.T * Lc) / n
-
-	varHSIC = (Kc * Lc / 6)**2
-
-	varHSIC = ( np.sum(varHSIC) - np.trace(varHSIC) ) / n / (n-1)
-
-	varHSIC = varHSIC * 72 * (n-4) * (n-5) / n / (n-1) / (n-2) / (n-3)
-
-	K = K - np.diag(np.diag(K))
-	L = L - np.diag(np.diag(L))
-
-	muX = np.dot(np.dot(bone.T, K), bone) / n / (n-1)
-	muY = np.dot(np.dot(bone.T, L), bone) / n / (n-1)
-
-	mHSIC = (1 + muX * muY - muX - muY) / n
-
-	al = mHSIC**2 / varHSIC
-	bet = varHSIC*n / mHSIC
-
-	thresh = gamma.ppf(1-alph, al, scale=bet)[0][0]
-
-	return (testStat, thresh)
-
-
 class PerceptualEncoder(torch.nn.Module):
     def __init__(self):
         """
@@ -600,6 +444,8 @@ class PerceptualEncoder(torch.nn.Module):
             img = (img-self.mean) / self.std
             f_maps = self.vgg(img)
             return f_maps
+
+
 
 if __name__ == "__main__":
     metric = torch.nn.MSELoss(reduction='none').cuda()

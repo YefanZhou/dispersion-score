@@ -55,7 +55,7 @@ python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
 ### Measure Dispersion Score (DS)
 
 ```bash
-python -m eval_cmd.eval_ds_synthetic
+python eval_scripts/eval_ds_synthetic.py --gpus [IDS OF GPUS TO USE]
 ```
 
 The input DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_1**", 

@@ -2,10 +2,15 @@ import os
 import sys
 import signal
 sys.path.append('../')
+from training.gputracker import get_logger, DispatchThread
 from os.path import join
-from training.gputracker import get_logger
 import glob
+import argparse
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--gpus", nargs='+', type=int, default=[0, 1], help="ids of gpu to use")
+args = parser.parse_args()
 ################################################################################################
 ############################### Input Dispersion Score of Synthetic Datasets ###################
 results_base_dir = "eval/eval_results"
@@ -44,7 +49,7 @@ for json_type in json_list:
                                                     f"--e_method {e_method_list} " \
                                                     f"--cluster_k {cluster_k} " \
                                                     f"--perceptual " \
-                                                    f"--res_folder 'checkpoints_{rsample}' "
+                                                    f"--res_folder 'checkpoints_input' "
                                                     f"--metric {metric_dic[type]} " \
                                                     f"--data_base_dir 'dataset/synthetic_data/cubesphere_1000' " \
                                                     f"--train_json_file 'cluster_{json_type}_aug_2by10_cltsize{cltsize:02}.json' " \
@@ -70,7 +75,7 @@ BASH_COMMAND_LIST.append("python eval/input_ds_synthetic.py --SVR " \
                                     f"--e_method {e_method_list} " \
                                     f"--cluster_k {cluster_k} " \
                                     f"--perceptual " \
-                                    f"--res_folder 'checkpoints_{rsample}' "
+                                    f"--res_folder 'checkpoints_input' "
                                     f"--metric {metric_dic[type]} " \
                                     f"--data_base_dir 'dataset/synthetic_data/cubesphere_1000' " \
                                     f"--train_json_file 'cluster_{json_type}_aug_2by10_cltsize{cltsize:02}.json' " \
@@ -81,17 +86,16 @@ BASH_COMMAND_LIST.append("python eval/input_ds_synthetic.py --SVR " \
 
 
 
-for command in BASH_COMMAND_LIST:
-    
-    logger.info(f"Launching Experiments: {command}")
-    os.system(command)
+dispatch_thread = DispatchThread("input ds evaluation", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
 
-    # sleep 5 seconds 
-    code = os.system('sleep 5')
+import time
+time.sleep(5)
 
-    if code == signal.SIGINT:
-        logger.info('Keyboard Interpret')
-        break
+logger.info("Exiting Main Thread")
 
 ################################################################################################
 ############################### Output Dispersion Score of Synthetic Datasets ###################
@@ -138,13 +142,15 @@ for trained_exp_dir in trained_exp_dir_lst:
                                         f"--val_json_file 'val_interp_1000.json' " \
                                         f"--trained_exp_dir '{trained_exp_dir}' ")
 
-for command in BASH_COMMAND_LIST:
-    
-    logger.info(f"Launching Experiments: {command}")
-    os.system(command)
-    # sleep 5 seconds 
-    code = os.system('sleep 5')
 
-    if code == signal.SIGINT:
-        logger.info('Keyboard Interpret')
-        break
+
+dispatch_thread = DispatchThread("output ds evaluation", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
+
+import time
+time.sleep(5)
+
+logger.info("Exiting Main Thread")

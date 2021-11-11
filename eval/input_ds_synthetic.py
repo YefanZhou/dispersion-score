@@ -4,22 +4,18 @@ import os
 import numpy as np
 import sys
 import torch
-torch.multiprocessing.set_sharing_strategy('file_system')
 import random
 import tqdm
 import time
-import logging
-from easydict import EasyDict
 from pathlib import Path
 from os.path import join
-import torch.nn as nn
 sys.path.append(join(os.path.dirname(os.path.abspath(__file__)), "../"))
 from dataset.toy_dataset.toydataset import ToyDataset
-from dataset.dataset_shapenet_views import ShapeNet
+
 from auxiliary.my_utils import plant_seeds, chunks
 from auxiliary.metric_parser import parser
-from eval.metric import ChamferDistanceL2, PerceptualEncoder, cluster_eval, compute_ptcloud_dismatrix, compute_ptcloud_dismatrix_batch, silhouette_score_ap, pairwise_distances_torch, compute_img_dismatrix_batch
-from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
+from eval.metric import ChamferDistanceL2, PerceptualEncoder, cluster_eval, compute_ptcloud_dismatrix_batch, compute_img_dismatrix_batch
+from eval.eval_utils import get_logger, mean_std
 
 
 opt = parser()
@@ -32,7 +28,7 @@ opt.logger = proc_logger
 
 nviews_dic = {"train":opt.nviews_train, "test":opt.nviews_test}
 num_seed = max(len(opt.seed_list), 1)
-sscore_collect = {}
+ds_collect = {}
 eval_label_list = set()
 proc_logger.info(opt.c_method)
 proc_logger.info(opt.e_method)
@@ -43,12 +39,12 @@ percep_encoder = PerceptualEncoder().to(opt.device)
 for seed_idx in range(num_seed):
     if opt.seed_list:
         opt.seed = opt.seed_list[seed_idx]
-    sscore_collect.update({str(opt.seed):{}})
+    ds_collect.update({str(opt.seed):{}})
 
     plant_seeds(opt.seed)
     ## train
     if opt.split == "train":
-        #dataset = ShapeNet(opt, train=True, num_image_per_object=nviews_dic[opt.split]) 
+       
         dataset = ToyDataset(opt.data_base_dir, 
                 json_file=opt.train_json_file, 
                 num_points=opt.number_points, 
@@ -129,13 +125,7 @@ for seed_idx in range(num_seed):
     elif opt.type == 'image':
         data = data.view(data.shape[0], -1)
         proc_logger.info(f"feature shape: {data.shape}")
-        #data = data.to(opt.device)
-        # try:
-        #     data = data.to(opt.device)
-        # except:
-        #     data = data 
 
-        #distance_matrix = pairwise_distances_torch(data)
         metric = torch.nn.MSELoss(reduction='none').to(opt.device)
         distance_matrix = compute_img_dismatrix_batch(data, data, metric, 
                         opt.pred_batch_size, opt.device, proc_logger)
@@ -157,11 +147,6 @@ for seed_idx in range(num_seed):
         score, part_label = cluster_eval(c_method=c_method, e_method=e_method, distance_matrix=distance_matrix, 
                 seed=opt.seed, n_cluster=n_cluster, pc=perf_pc)
 
-        label_stat_verbose = ""
-        freq = CountFrequency(part_label)
-        for key, value in freq.items(): 
-            label_stat_verbose += "% d :% d | "%(key, value)
-
         proc_logger.info(f"Type:{opt.type}, mode:{opt.mode}, split:{opt.split}, Subtrainset:{opt.train_json_file}   "+ 
                     f"sample num:{sample_num}   " + 
                     f"seed:{opt.seed}, metric:{opt.metric}, {c_method}, {e_method}, cluster_k:{n_cluster}   " + 
@@ -169,51 +154,50 @@ for seed_idx in range(num_seed):
                     f"compute_time:{elasp_time:2f} min")
 
         eval_label = f"{c_method}_{e_method}_k{n_cluster}p{perf_pc}"
-        sscore_collect[str(opt.seed)].update({eval_label: {}})
+        ds_collect[str(opt.seed)].update({eval_label: {}})
         eval_label_list.add(eval_label)
-        sscore_collect[str(opt.seed)][eval_label].update({"sscore": score})
-        sscore_collect[str(opt.seed)][eval_label].update({"avg_sscore": score/sample_num})
-        sscore_collect[str(opt.seed)][eval_label].update({"label": np.array(part_label)})     # cluster label
-        sscore_collect[str(opt.seed)][eval_label].update({"perf_percent": perf_pc})
-        sscore_collect[str(opt.seed)][eval_label].update({"label_stats": dic_to_array(freq)})
-
+        ds_collect[str(opt.seed)][eval_label].update({"ds": score})
+        ds_collect[str(opt.seed)][eval_label].update({"avg_ds": score/sample_num})
+        ds_collect[str(opt.seed)][eval_label].update({"label": np.array(part_label)})     # cluster label
+        ds_collect[str(opt.seed)][eval_label].update({"perf_percent": perf_pc})
+        
 
 eval_label_list = list(eval_label_list)
 eval_label_list.sort()
 
-ss_list = {}
+ds_list = {}
 for eval_label in eval_label_list:
-    ss_list.update({eval_label:[]})
+    ds_list.update({eval_label:[]})
 
-for seed in sscore_collect:
+for seed in ds_collect:
     for eval_label in eval_label_list:
-        ss_list[eval_label].append(sscore_collect[seed][eval_label]["sscore"])
+        ds_list[eval_label].append(ds_collect[seed][eval_label]["ds"])
 
 for eval_label in eval_label_list:
-    avg_score_lst = [score/sample_num for score in ss_list[eval_label]]
-    ss_mean, ss_std = mean_std(ss_list[eval_label])
-    avg_ss_mean, avg_ss_std = mean_std(avg_score_lst)
-    sscore_collect.update({f'{eval_label}': np.array([ss_mean, ss_std])})
-    sscore_collect.update({f'avg_{eval_label}': np.array([avg_ss_mean, avg_ss_std])})
+    avg_score_lst = [score/sample_num for score in ds_list[eval_label]]
+    ds_mean, ds_std = mean_std(ds_list[eval_label])
+    avg_ds_mean, avg_ds_std = mean_std(avg_score_lst)
+    ds_collect.update({f'{eval_label}': np.array([ds_mean, ds_std])})
+    ds_collect.update({f'avg_{eval_label}': np.array([avg_ds_mean, avg_ds_std])})
 
-sscore_collect.update({'split': opt.split})
-sscore_collect.update({'type': opt.type})
-sscore_collect.update({'mode': opt.mode})
-sscore_collect.update({'sample_num': sample_num})
-sscore_collect.update({'trainnv': np.array([opt.nviews_train])})
-sscore_collect.update({'testnv': np.array([opt.nviews_test])})
+ds_collect.update({'split': opt.split})
+ds_collect.update({'type': opt.type})
+ds_collect.update({'mode': opt.mode})
+ds_collect.update({'sample_num': sample_num})
+ds_collect.update({'trainnv': np.array([opt.nviews_train])})
+ds_collect.update({'testnv': np.array([opt.nviews_test])})
 
 
 for eval_label in eval_label_list:
-    ss_mean, ss_std = sscore_collect[f'{eval_label}'][0], sscore_collect[f'{eval_label}'][1]
-    avg_ss_mean, avg_ss_std = sscore_collect[f'avg_{eval_label}'][0], sscore_collect[f'avg_{eval_label}'][1]
+    ds_mean, ds_std = ds_collect[f'{eval_label}'][0], ds_collect[f'{eval_label}'][1]
+    avg_ds_mean, avg_ds_std = ds_collect[f'avg_{eval_label}'][0], ds_collect[f'avg_{eval_label}'][1]
     res_logger.info(f"Type:{opt.type}, mode:{opt.mode}, split:{opt.split}, Subtrainset:{opt.train_json_file}  " + 
                     f"sample_num:{sample_num}, seed_list:{opt.seed_list}, metric:{opt.metric}, eval_method:{eval_label}   " + 
-                    f"Sum_of_Score: (mean: {ss_mean:.6f}|std: {ss_std:.6f})   "+ 
-                    f"Dispersion Score: (mean: {avg_ss_mean:.6f}|std: {avg_ss_std:.6f})  "+ 
+                    f"Sum_of_Score: (mean: {ds_mean:.6f}|std: {ds_std:.6f})   "+ 
+                    f"Dispersion Score: (mean: {avg_ds_mean:.6f}|std: {avg_ds_std:.6f})  "+ 
                     f"DM compute time {elasp_time:.2f} min")
     
-np.savez_compressed(os.path.join(res_path, f"stats_{opt.mode}_{opt.split}_{opt.type}_{opt.train_json_file.split('.')[0]}_numsample{sample_num}.npz"), **sscore_collect)
+np.savez_compredsed(os.path.join(res_path, f"stats_{opt.mode}_{opt.split}_{opt.type}_{opt.train_json_file.split('.')[0]}_numsample{sample_num}.npz"), **ds_collect)
 res_logger.info(f"###############END OF {opt.type} PIPELINE#################")
 
 
