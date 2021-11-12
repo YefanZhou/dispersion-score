@@ -12,12 +12,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--gpus", nargs='+', type=int, default=[0, 1], help="ids of gpu to use")
 args = parser.parse_args()
 ################################################################################################
-############################### Input Dispersion Score of Synthetic Datasets ###################
+################=# Input Dispersion Score of Synthetic Datasets ###################
 
 results_base_dir = "eval/eval_results"
 BASH_COMMAND_LIST = []
 logger = get_logger(results_base_dir, 'schedule_eval_synthetic.log')
-'''
 split_list = ['train']
 type_list = ['image', 'points']
 json_list = ['image', 'shape']
@@ -87,7 +86,7 @@ BASH_COMMAND_LIST.append("python eval/input_ds_synthetic.py --SVR " \
 
 
 dispatch_thread = DispatchThread("input ds evaluation", 
-                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=4)
 # Start new Threads
 dispatch_thread.start()
 dispatch_thread.join()
@@ -96,7 +95,7 @@ import time
 time.sleep(5)
 
 logger.info("Exiting Main Thread")
-'''
+
 ################################################################################################
 ############################### Output Dispersion Score of Synthetic Datasets ###################
 BASH_COMMAND_LIST = []
@@ -150,7 +149,7 @@ for trained_exp_dir in trained_exp_dir_lst:
 
 
 dispatch_thread = DispatchThread("output ds evaluation", 
-                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=4)
 # Start new Threads
 dispatch_thread.start()
 dispatch_thread.join()

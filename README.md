@@ -46,10 +46,17 @@ unzip ShapeNetV1RenderingAnglelimit.zip -d ./dataset/data/
 
 ### Model Training 
 
-Train models on 16 train sets of synthetic datasets, each takes 20 minitues and use 4.3GB GPU memory.
+Train models on 16 train sets of synthetic datasets.
 
 ```bash
 python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
+```
+
+You may also download our [trained models](https://drive.google.com/file/d/1h3mZUMueGfrhPTZo1BoNNYLyPymlpZb7/view?usp=sharing).
+
+```bash
+mkdir -p log/train_synthetic
+unzip toydata_checkpoints.zip -d ./log/train_synthetic/
 ```
 
 ### Measure Dispersion Score (DS)
@@ -58,11 +65,9 @@ python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
 python eval_scripts/eval_ds_synthetic.py --gpus [IDS OF GPUS TO USE]
 ```
 
-The input DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_1**", 
+### Visualize the Results
 
-The output DS are saved to **"eval/eval_results/eval_ds_synthetic/checkpoints_pred**"
-
-
+Run the [notebook](https://github.com/YefanZhou/dispersion-score/blob/main/plot_scripts/synthetic_dataset.ipynb).
 
 ## Experiments on ShapeNet:
 
