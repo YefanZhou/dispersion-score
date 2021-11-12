@@ -4,7 +4,6 @@ opencv-python==4.4.0.44
 open3d==0.10.0.0
 numpy==1.19.2
 PyYAML==5.4
-matplotlib
 scikit-image==0.17.2
 scikit-learn==0.23.2
 scipy==1.5.2
