@@ -116,9 +116,10 @@ res_folder = 'checkpoints_pred'  # 'checkpoints_pred_lastepoch' checkpoints_pred
 network = 'pseudo_network'                   #toydata_lastepoch  toydata_bestepoch
 
 
-trained_exp_dir_lst = glob.glob(join(log_base_dir, "*"))
+trained_exp_dir_lst = glob.glob(join(log_base_dir, "*Epoch*"))
 trained_exp_dir_lst.sort()
 for trained_exp_dir in trained_exp_dir_lst:
+    print(trained_exp_dir)
     json_type = trained_exp_dir.split('_')[4]
     cltsize = int(trained_exp_dir.split('_')[7][7:])
     BASH_COMMAND_LIST.append("python eval/output_ds_synthetic.py --SVR " \
