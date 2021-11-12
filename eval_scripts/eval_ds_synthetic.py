@@ -140,7 +140,7 @@ for trained_exp_dir in trained_exp_dir_lst:
                                         f"--e_method {e_method_list} " \
                                         f"--cluster_k {cluster_k} " \
                                         f"--res_folder {res_folder} " \
-                                        f"--reload_model_path '{trained_exp_dir}/checkpoint.pt'" \
+                                        f"--reload_model_path '{trained_exp_dir}/checkpoint.pt' " \
                                         f"--metric 'chamfer' " \
                                         f"--data_base_dir 'dataset/synthetic_data/cubesphere_1000' " \
                                         f"--train_json_file 'cluster_{json_type}_aug_2by10_cltsize{cltsize:02}.json' " \
