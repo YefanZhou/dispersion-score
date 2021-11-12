@@ -84,7 +84,6 @@ for seed_idx in range(num_seed):
     if opt.rsample == 1:
         sample_num = len(dataset)
         opt.nsample = len(dataset)
-        assert sample_num == data.shape[0], 'data set input mismatch with prediction npy'
     else:
         if opt.rsample != -1:
             opt.nsample = int(opt.rsample * len(dataset))
