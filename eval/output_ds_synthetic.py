@@ -17,7 +17,6 @@ from model.pseudo_network import Generator
 from eval.metric import ChamferDistanceL2, compute_ptcloud_dismatrix_batch, cluster_eval
 from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
 import auxiliary.ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as dist_chamfer_3D
-from auxiliary.ChamferDistancePytorch.fscore import fscore
 
 
 opt = parser()
@@ -26,20 +25,20 @@ opt.device = torch.device("cuda")
 res_path = join(opt.dir_name, opt.res_folder)
 Path(res_path).mkdir(parents=True, exist_ok=True)
 proc_logger = get_logger("process", res_path, "process.log")
-res_logger = get_logger("results", res_path, "sscore.log")
+res_logger = get_logger("results", res_path, "score.log")
 opt.logger = proc_logger
 print(opt.trained_exp_dir)
 
 
 nviews_dic = {"train":opt.nviews_train, "test":opt.nviews_test}
 num_seed = max(len(opt.seed_list), 1)
-sscore_collect = {}
+score_collect = {}
 eval_label_list = set()
 
 for seed_idx in range(num_seed):
     if opt.seed_list:
         opt.seed = opt.seed_list[seed_idx]
-    sscore_collect.update({str(opt.seed):{}})
+    score_collect.update({str(opt.seed):{}})
     plant_seeds(opt.seed)
 
     ##Loading Data and Network
@@ -87,8 +86,6 @@ for seed_idx in range(num_seed):
         sample_num = len(subset_index)
 
     pred_loss = 0.0
-    pred_fscore = 0.0
-
     with torch.set_grad_enabled(False): 
         for batch in tqdm.tqdm(loader, desc=f"loading {opt.split} {opt.type} data"):
             if opt.split == 'pred':
@@ -100,14 +97,10 @@ for seed_idx in range(num_seed):
 
                 pred_loss += eval_loss(gt_points, pred_points).item()
                 dist1, dist2, idx1, idx2 = distChamfer(gt_points, pred_points)
-                loss_fscore, _, _ = fscore(dist1, dist2)
-                loss_fscore = loss_fscore.mean()
-                pred_fscore += loss_fscore.item()
                 opt.type = 'points'
 
     pred_loss /= len(loader)
-    pred_fscore /= len(loader)
-    proc_logger.info(f"Pred Chamfer Loss: {pred_loss:4f},  Pred Fscore: {pred_fscore:4f}")
+    proc_logger.info(f"Pred Chamfer Loss: {pred_loss:4f}")
     start_time = time.time()
 
     if opt.type == 'points':
@@ -122,9 +115,8 @@ for seed_idx in range(num_seed):
 
     distance_matrix = distance_matrix.cpu().numpy()
 
-    sscore_collect[str(opt.seed)].update({"dm": distance_matrix})
-    sscore_collect[str(opt.seed)].update({"pred_chamfer": pred_loss})
-    sscore_collect[str(opt.seed)].update({"pred_fscore": pred_fscore})
+    score_collect[str(opt.seed)].update({"dm": distance_matrix})
+    score_collect[str(opt.seed)].update({"pred_chamfer": pred_loss})
     
     n_evals = len(opt.perf_pc_list)
     for index in range(n_evals):
@@ -141,16 +133,16 @@ for seed_idx in range(num_seed):
         proc_logger.info(f"{opt.type} mode: {opt.mode}, split: {opt.split} " + 
                     f"nviews: train {opt.nviews_train}, test {opt.nviews_test}, sample num:{sample_num} " + 
                     f"seed{opt.seed}, metric{opt.metric} perf{perf_pc}% " + 
-                    f"samp{distance_matrix.shape[0]}, Pred Chamfer: {pred_loss:.6f}, Pred Fscore: {pred_fscore:.6f}, SSCORE: {score:.6f} DM" + 
+                    f"samp{distance_matrix.shape[0]}, Pred Chamfer: {pred_loss:.4f}, score: {score:.4f} DM" + 
                     f"{distance_matrix.shape[0]}, compute time {elasp_time:2f} min")
 
         eval_label = f"{c_method}_{e_method}_k{n_cluster}p{perf_pc}"
-        sscore_collect[str(opt.seed)].update({eval_label: {}})
+        score_collect[str(opt.seed)].update({eval_label: {}})
         eval_label_list.add(eval_label)
-        sscore_collect[str(opt.seed)][eval_label].update({"sscore": score})
-        sscore_collect[str(opt.seed)][eval_label].update({"label": np.array(part_label)})     # cluster label
-        sscore_collect[str(opt.seed)][eval_label].update({"perf_percent": perf_pc})
-        sscore_collect[str(opt.seed)][eval_label].update({"label_stats": dic_to_array(freq)})
+        score_collect[str(opt.seed)][eval_label].update({"score": score})
+        score_collect[str(opt.seed)][eval_label].update({"label": np.array(part_label)})     # cluster label
+        score_collect[str(opt.seed)][eval_label].update({"perf_percent": perf_pc})
+        score_collect[str(opt.seed)][eval_label].update({"label_stats": dic_to_array(freq)})
     
 eval_label_list = list(eval_label_list)
 eval_label_list.sort()
@@ -159,46 +151,42 @@ for eval_label in eval_label_list:
     ss_list.update({eval_label:[]})
 
 pred_list = []
-fscore_list = []
-for seed in sscore_collect:
-    pred_list.append(sscore_collect[seed]['pred_chamfer'])
-    fscore_list.append(sscore_collect[seed]['pred_fscore'])
+
+for seed in score_collect:
+    pred_list.append(score_collect[seed]['pred_chamfer'])
     for eval_label in eval_label_list:
-        ss_list[eval_label].append(sscore_collect[seed][eval_label]["sscore"])
+        ss_list[eval_label].append(score_collect[seed][eval_label]["score"])
 
 for eval_label in eval_label_list:
     avg_score_lst = [score/sample_num for score in ss_list[eval_label]]
     ss_mean, ss_std = mean_std(ss_list[eval_label])
     avg_ss_mean, avg_ss_std = mean_std(avg_score_lst)
-    sscore_collect.update({f'{eval_label}': np.array([ss_mean, ss_std])})
-    sscore_collect.update({f'avg_{eval_label}': np.array([avg_ss_mean, avg_ss_std])})
+    score_collect.update({f'{eval_label}': np.array([ss_mean, ss_std])})
+    score_collect.update({f'avg_{eval_label}': np.array([avg_ss_mean, avg_ss_std])})
 
 pred_loss_mean, pred_loss_std = mean_std(pred_list)
-pred_fscore_mean, pred_fscore_std = mean_std(fscore_list)
 
-sscore_collect.update({'split': opt.split})
-sscore_collect.update({'type': opt.type})
-sscore_collect.update({'mode': opt.mode})
-sscore_collect.update({'sample_num': sample_num})
-sscore_collect.update({'chamfer_stats': np.array([pred_loss_mean, pred_loss_std])})
-sscore_collect.update({'fscore_stats': np.array([pred_fscore_mean, pred_fscore_std])})
-sscore_collect.update({'trainnv': np.array([opt.nviews_train])})
-sscore_collect.update({'testnv': np.array([opt.nviews_test])})
+score_collect.update({'split': opt.split})
+score_collect.update({'type': opt.type})
+score_collect.update({'mode': opt.mode})
+score_collect.update({'sample_num': sample_num})
+score_collect.update({'chamfer_stats': np.array([pred_loss_mean, pred_loss_std])})
+score_collect.update({'trainnv': np.array([opt.nviews_train])})
+score_collect.update({'testnv': np.array([opt.nviews_test])})
 
 for eval_label in eval_label_list:
-    ss_mean, ss_std = sscore_collect[f'{eval_label}'][0], sscore_collect[f'{eval_label}'][1]
-    avg_ss_mean, avg_ss_std = sscore_collect[f'avg_{eval_label}'][0], sscore_collect[f'avg_{eval_label}'][1]
+    ss_mean, ss_std = score_collect[f'{eval_label}'][0], score_collect[f'{eval_label}'][1]
+    avg_ss_mean, avg_ss_std = score_collect[f'avg_{eval_label}'][0], score_collect[f'avg_{eval_label}'][1]
     res_logger.info(f"{opt.network} {opt.type} mode: {opt.mode}, split: {opt.split}, " + 
                     f"nviews: train {opt.nviews_train}, test {opt.nviews_test}, sample num: {sample_num} " + 
                     f"seed_list {opt.seed_list}, metric {opt.metric} perf: {perf_pc} % {opt.metric} {opt.trained_exp_dir} {eval_label} " + 
                     f"Sum_of_Score: (mean: {ss_mean:.6f}|std: {ss_std:.6f})  "+ 
                     f"Dispersion Score: (mean: {avg_ss_mean:.6f}|std: {avg_ss_std:.6f})   "+ 
                     f"Pred Chamfer: (mean:{pred_loss_mean:.6f}|std: {pred_loss_std:.6f})  " +
-                    f"Pred Fscore: (mean:{pred_fscore_mean:.6f}|std: {pred_fscore_std:.6f})  " + 
                     f"DM compute time {elasp_time:.2f} min")
     
 np.savez_compressed(os.path.join(res_path, 
-f"{opt.network}_{opt.mode}_{opt.split}_{opt.type}_{sample_num}_{opt.trained_exp_dir.split('/')[-1]}.npz"), **sscore_collect)
+f"{opt.network}_{opt.mode}_{opt.split}_{opt.type}_{sample_num}_{opt.trained_exp_dir.split('/')[-1]}.npz"), **score_collect)
     
 res_logger.info(f"###############END OF {opt.type} {opt.network} {opt.trained_exp_dir} PIPELINE#################")
 

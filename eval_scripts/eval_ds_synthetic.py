@@ -85,7 +85,6 @@ BASH_COMMAND_LIST.append("python eval/input_ds_synthetic.py --SVR " \
 
 
 
-
 dispatch_thread = DispatchThread("input ds evaluation", 
                  BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
 # Start new Threads
