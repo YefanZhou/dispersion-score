@@ -42,7 +42,7 @@ for seed_idx in range(num_seed):
         opt.seed = opt.seed_list[seed_idx]
     score_collect.update({str(opt.seed):{}})
 
-    plant_seescore(opt.seed)
+    plant_seeds(opt.seed)
     ## train
     if opt.split == "train":
        
