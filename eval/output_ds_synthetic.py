@@ -18,7 +18,7 @@ from model.pseudo_network import Generator
 from eval.metric import ChamferDistanceL2, compute_ptcloud_dismatrix_batch, cluster_eval
 from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
 import auxiliary.ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as dist_chamfer_3D
-
+from train_toydata import Trainer
 
 opt = parser()
 ###Mkdir and logger
@@ -97,7 +97,9 @@ for seed_idx in range(num_seed):
             if opt.split == 'pred':
                 input_img = batch['image'].to(opt.device)
                 pred_points = network(input_img, train=False)
+                pred_points = pred_points.transpose(2, 3).contiguous()
                 B = pred_points.shape[0]
+                pred_points = pred_points.view(B, -1, 3)
                 gt_points = batch['points'].to(opt.device)
                 assert gt_points.shape[0] == B, f'gt {gt_points.shape[0]}, while pred {B}'
                 print(gt_points.shape)
