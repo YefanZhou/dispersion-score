@@ -90,7 +90,7 @@ for seed_idx in range(num_seed):
         subset_index = random.sample(range(len(dataset)), opt.nsample)
         dataset = torch.utils.data.Subset(dataset, subset_index)
         sample_num = len(subset_index)
-
+    data = None
     pred_loss = 0.0
     with torch.set_grad_enabled(False): 
         for batch in tqdm.tqdm(loader, desc=f"loading {opt.split} {opt.type} data"):
@@ -104,6 +104,10 @@ for seed_idx in range(num_seed):
                 assert gt_points.shape[0] == B, f'gt {gt_points.shape[0]}, while pred {B}'
                 print(gt_points.shape)
                 print(pred_points.shape)
+                if data is None:
+                    data = pred_points
+                else:
+                    data = torch.cat((data, pred_points), dim=0)
                 pred_loss += eval_loss(gt_points, pred_points).item()
                 dist1, dist2, idx1, idx2 = distChamfer(gt_points, pred_points)
                 opt.type = 'points'
