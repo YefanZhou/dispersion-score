@@ -114,7 +114,7 @@ type = 'points'
 pred_batch_size = 64
 res_folder = 'checkpoints_pred'  # 'checkpoints_pred_lastepoch' checkpoints_pred_bestepoch
 network = 'pseudo_network'                   #toydata_lastepoch  toydata_bestepoch
-
+model = ('atlasnet', 'SPHERE', 1)
 
 trained_exp_dir_lst = glob.glob(join(log_base_dir, "*Epoch*"))
 trained_exp_dir_lst.sort()
@@ -126,7 +126,12 @@ for trained_exp_dir in trained_exp_dir_lst:
                                         f"--rsample {rsample} " \
                                         f"--nsample {nsample} " \
                                         f"--type {type} " \
-                                        f"--network {network} " \
+                                        f"--SVR " \
+                                        f"--network {model[0]} " \
+                                        f"--template_type {model[1]} " \
+                                        f"--nb_primitives {model[2]} " \
+                                        f"--bottleneck_size 1024 " \
+                                        f"--hidden_neurons 512 " \
                                         f"--seed_list {SEED_LIST} " \
                                         f"--split {split} " \
                                         f"--pred_batch_size {pred_batch_size} " \
@@ -135,6 +140,7 @@ for trained_exp_dir in trained_exp_dir_lst:
                                         f"--e_method {e_method_list} " \
                                         f"--cluster_k {cluster_k} " \
                                         f"--res_folder {res_folder} " \
+                                        f"--reload_model_path {trained_exp_dir}/checkpoint.pt" \
                                         f"--metric 'chamfer' " \
                                         f"--data_base_dir 'dataset/synthetic_data/cubesphere_1000' " \
                                         f"--train_json_file 'cluster_{json_type}_aug_2by10_cltsize{cltsize:02}.json' " \

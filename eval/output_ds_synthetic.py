@@ -9,6 +9,7 @@ import tqdm
 import time
 from pathlib import Path
 from os.path import join
+from model.model import EncoderDecoder
 sys.path.append(join(os.path.dirname(os.path.abspath(__file__)), "../"))
 from dataset.toy_dataset.toydataset import ToyDataset
 from auxiliary.my_utils import plant_seeds
@@ -17,6 +18,7 @@ from model.pseudo_network import Generator
 from eval.metric import ChamferDistanceL2, compute_ptcloud_dismatrix_batch, cluster_eval
 from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
 import auxiliary.ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as dist_chamfer_3D
+from train_toydata import Trainer
 
 
 opt = parser()
@@ -46,13 +48,19 @@ for seed_idx in range(num_seed):
         eval_loss = ChamferDistanceL2().to(opt.device)
         distChamfer = dist_chamfer_3D.chamfer_3DDist()
 
-        if opt.network=='pseudo_network':
-            proc_logger.info(f"Network {opt.network}: From {os.path.join(opt.trained_exp_dir, 'prediction.npy')}")
-            data = np.load(os.path.join(opt.trained_exp_dir, 'prediction.npy'))
-            data = torch.from_numpy(data).to(opt.device)
-            network = Generator(data, opt.pred_batch_size)
-        else:
-            raise NotImplementedError(f"{opt.network} is not implemented/imported")
+        if opt.network=='atlasnet':
+            network = EncoderDecoder(opt)
+            opt.logger.info(f"Reloading Network Weights from {opt.reload_model_path}...")
+            network.load_state_dict(torch.load(opt.reload_model_path)['model_state_dict'])
+            network.to(opt.device)
+
+        # if opt.network=='pseudo_network':
+        #     proc_logger.info(f"Network {opt.network}: From {os.path.join(opt.trained_exp_dir, 'prediction.npy')}")
+        #     data = np.load(os.path.join(opt.trained_exp_dir, 'prediction.npy'))
+        #     data = torch.from_numpy(data).to(opt.device)
+        #     network = Generator(data, opt.pred_batch_size)
+        # else:
+        #     raise NotImplementedError(f"{opt.network} is not implemented/imported")
     
     if opt.split == "train":
         dataset = ToyDataset(data_base_dir=opt.data_base_dir, 
@@ -180,9 +188,9 @@ for eval_label in eval_label_list:
     res_logger.info(f"{opt.network} {opt.type} mode: {opt.mode}, split: {opt.split}, " + 
                     f"nviews: train {opt.nviews_train}, test {opt.nviews_test}, sample num: {sample_num} " + 
                     f"seed_list {opt.seed_list}, metric {opt.metric} perf: {perf_pc} % {opt.metric} {opt.trained_exp_dir} {eval_label} " + 
-                    f"Sum_of_Score: (mean: {ss_mean:.6f}|std: {ss_std:.6f})  "+ 
-                    f"Dispersion Score: (mean: {avg_ss_mean:.6f}|std: {avg_ss_std:.6f})   "+ 
-                    f"Pred Chamfer: (mean:{pred_loss_mean:.6f}|std: {pred_loss_std:.6f})  " +
+                    f"Sum of Score: (mean: {ss_mean:.4f}|std: {ss_std:.4f})  "+ 
+                    f"Average Score: (mean: {avg_ss_mean:.4f}|std: {avg_ss_std:.4f})   "+ 
+                    f"Pred Chamfer: (mean:{pred_loss_mean:.4f}|std: {pred_loss_std:.4f})  " +
                     f"DM compute time {elasp_time:.2f} min")
     
 np.savez_compressed(os.path.join(res_path, 
