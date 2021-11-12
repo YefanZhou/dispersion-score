@@ -119,7 +119,6 @@ network = 'pseudo_network'                   #toydata_lastepoch  toydata_bestepo
 trained_exp_dir_lst = glob.glob(join(log_base_dir, "*Epoch*"))
 trained_exp_dir_lst.sort()
 for trained_exp_dir in trained_exp_dir_lst:
-    print(trained_exp_dir)
     json_type = trained_exp_dir.split('_')[4]
     cltsize = int(trained_exp_dir.split('_')[7][7:])
     BASH_COMMAND_LIST.append("python eval/output_ds_synthetic.py --SVR " \
@@ -142,19 +141,15 @@ for trained_exp_dir in trained_exp_dir_lst:
                                         f"--test_json_file 'test_interp_1000.json' " \
                                         f"--val_json_file 'val_interp_1000.json' " \
                                         f"--trained_exp_dir '{trained_exp_dir}' ")
-    print(json_type)
-    print(cltsize)
-    print(BASH_COMMAND_LIST[-1])
 
 
+dispatch_thread = DispatchThread("output ds evaluation", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
 
-# dispatch_thread = DispatchThread("output ds evaluation", 
-#                  BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
-# # Start new Threads
-# dispatch_thread.start()
-# dispatch_thread.join()
-
-# import time
-# time.sleep(5)
+import time
+time.sleep(5)
 
 logger.info("Exiting Main Thread")
