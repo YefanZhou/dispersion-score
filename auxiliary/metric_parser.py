@@ -83,6 +83,7 @@ def parser():
     parser.add_argument('--reload_optimizer_path', type=str, default='', help='optional reload model path')
 
     # Network
+    parser.add_argument("--encoder", type=str, default="resnet18", help="[resnet18, resnet50]")
     parser.add_argument("--network", type=str, default="atlasnet", help="[psgn, atlasnet]")
     parser.add_argument('--num_layers', type=int, default=2, help='number of hidden MLP Layer')
     parser.add_argument('--hidden_neurons', type=int, default=512, help='number of neurons in each hidden layer')

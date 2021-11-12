@@ -18,7 +18,6 @@ from model.pseudo_network import Generator
 from eval.metric import ChamferDistanceL2, compute_ptcloud_dismatrix_batch, cluster_eval
 from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
 import auxiliary.ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as dist_chamfer_3D
-from train_toydata import Trainer
 
 
 opt = parser()
