@@ -100,7 +100,8 @@ for seed_idx in range(num_seed):
                 B = pred_points.shape[0]
                 gt_points = batch['points'].to(opt.device)
                 assert gt_points.shape[0] == B, f'gt {gt_points.shape[0]}, while pred {B}'
-
+                print(gt_points.shape)
+                print(pred_points.shape)
                 pred_loss += eval_loss(gt_points, pred_points).item()
                 dist1, dist2, idx1, idx2 = distChamfer(gt_points, pred_points)
                 opt.type = 'points'
