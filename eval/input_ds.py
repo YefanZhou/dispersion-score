@@ -6,8 +6,6 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 import random
 import tqdm
 import time
-import logging
-from easydict import EasyDict
 from pathlib import Path
 from os.path import join
 import torch.nn as nn
@@ -15,16 +13,13 @@ sys.path.append(join(os.path.dirname(os.path.abspath(__file__)), "../"))
 from dataset.dataset_shapenet_views import ShapeNet
 from auxiliary.my_utils import plant_seeds, chunks
 from auxiliary.metric_parser import parser
-from eval.metric import ChamferDistanceL2, PerceptualEncoder, cluster_eval, compute_ptcloud_dismatrix, compute_ptcloud_dismatrix_batch, silhouette_score_ap, pairwise_distances_torch, compute_img_dismatrix_batch
-from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
+from eval.metric import ChamferDistanceL2, PerceptualEncoder, cluster_eval, compute_ptcloud_dismatrix_batch, compute_img_dismatrix_batch
+from eval.eval_utils import get_logger, mean_std
 
 
 opt = parser()
 
 ###Mkdir and logger
-#exp_opts = load_config(join(opt.trained_exp_dir, "opts.yaml"))
-#exp_opts = EasyDict(exp_opts)
-#exp_opts.logger = logger
 opt.device = torch.device("cuda")
 res_path = join(opt.dir_name, opt.res_folder)
 Path(res_path).mkdir(parents=True, exist_ok=True)
@@ -146,36 +141,13 @@ for seed_idx in range(num_seed):
 
     distance_matrix = distance_matrix.detach().cpu().numpy()
     np.save(os.path.join(res_path, f"{opt.mode}_{opt.split}_{opt.type}_{opt.img_aug_type}_{opt.autoaug_type}_mag{opt.mag_idx}_magnitude{opt.magnitude}_n_op{opt.n_op}_prob{opt.prob}_trainnv{opt.nviews_train:02}_testnv{opt.nviews_test:02}_{sample_num}_SEED{opt.seed}.npy"), distance_matrix)
-    
-
-
-    dm_stat_dic = {"lower_quat":np.percentile(distance_matrix, 25), 
-                    "up_quat": np.percentile(distance_matrix, 75), 
-                    "mean": np.mean(distance_matrix),
-                    "min": np.min(distance_matrix),
-                    "max": np.max(distance_matrix),
-                    "median": np.median(distance_matrix),
-                    "std": np.std(distance_matrix)}
-
-    dm_stat_verbose = ""
-    for key in dm_stat_dic:
-        dm_stat_verbose += f"{key}: {dm_stat_dic[key] :2f}  "
-    
-    #sscore_collect[str(opt.seed)].update({"dm": distance_matrix})
-    sscore_collect[str(opt.seed)].update({"class_labels": np.array(cats)})
-    sscore_collect[str(opt.seed)].update({"dm_stats": dic_to_array(dm_stat_dic)})
-
+        
     n_evals = len(opt.perf_pc_list)
     for index in range(n_evals):
         c_method, e_method, n_cluster, perf_pc = opt.c_method[index], opt.e_method[index], opt.cluster_k[index], opt.perf_pc_list[index]
 
         score, part_label = cluster_eval(c_method=c_method, e_method=e_method, distance_matrix=distance_matrix, 
                 seed=opt.seed, n_cluster=n_cluster, pc=perf_pc)
-
-        label_stat_verbose = ""
-        freq = CountFrequency(part_label)
-        for key, value in freq.items(): 
-            label_stat_verbose += "% d :% d | "%(key, value)
 
         #proc_logger.info(dm_stat_verbose)
         #proc_logger.info(label_stat_verbose)
@@ -191,7 +163,6 @@ for seed_idx in range(num_seed):
         sscore_collect[str(opt.seed)][eval_label].update({"sscore": score})
         sscore_collect[str(opt.seed)][eval_label].update({"label": np.array(part_label)})     # cluster label
         sscore_collect[str(opt.seed)][eval_label].update({"perf_percent": perf_pc})
-        sscore_collect[str(opt.seed)][eval_label].update({"label_stats": dic_to_array(freq)})
 
 
 eval_label_list = list(eval_label_list)
@@ -231,56 +202,5 @@ np.savez_compressed(os.path.join(res_path, f"{opt.mode}_{opt.split}_{opt.type}_{
 res_logger.info(f"###############END OF {opt.type} PIPELINE#################")
 
 
-
-# sscore, part_label, part_preference = silhouette_score_ap(distance_matrix, 
-#     seed=opt.seed, pc=opt.perf_pc, logger=proc_logger)
-
-# label_stat_verbose = ""
-# freq = CountFrequency(part_label)
-# for key, value in freq.items(): 
-#     label_stat_verbose += "% d :% d | "%(key, value)
-
-# proc_logger.info(dm_stat_verbose)
-# proc_logger.info(label_stat_verbose)
-# proc_logger.info(f"{opt.type} mode: {opt.mode}, split: {opt.split} " + 
-#             f"nviews:{opt.nviews_train}, sample num: {sample_num} " + 
-#             f"seed{opt.seed}, metric {opt.metric} perf{opt.perf_pc}% " + 
-#             f"samp{distance_matrix.shape[0]} SSCORE: {sscore:6f} DM" + 
-#             f"{distance_matrix.shape[0]} compute time {elasp_time:2f} min")
-
-# sscore_collect[str(opt.seed)].update({"sscore": sscore})
-# sscore_collect[str(opt.seed)].update({"dm": distance_matrix})
-# sscore_collect[str(opt.seed)].update({"label": np.array(part_label)})     # cluster label
-# sscore_collect[str(opt.seed)].update({"ap_perf": part_preference})
-# sscore_collect[str(opt.seed)].update({"perf_percent": opt.perf_pc})
-# sscore_collect[str(opt.seed)].update({"dm_stats": dic_to_array(dm_stat_dic)})
-# sscore_collect[str(opt.seed)].update({"label_stats": dic_to_array(freq)})
-# sscore_collect[str(opt.seed)].update({"class_labels": np.array(cats)})
-
-
-# ss_list = []
-# for seed in sscore_collect:
-#     ss_list.append(sscore_collect[seed]['sscore'])
-
-# ss_mean, ss_std = mean_std(ss_list)
-
-# sscore_collect.update({'split': opt.split})
-# sscore_collect.update({'type': opt.type})
-# sscore_collect.update({'mode': opt.mode})
-# sscore_collect.update({'sample_num': sample_num})
-# sscore_collect.update({'ss_stats': np.array([ss_mean, ss_std])})
-# sscore_collect.update({'trainnv': np.array([opt.nviews_train])})
-# sscore_collect.update({'testnv': np.array([opt.nviews_test])})
-
-# res_logger.info(f"{opt.type} mode: {opt.mode}, split: {opt.split} " + 
-#                 f"nviews:{opt.nviews_train}, sample num: {sample_num} " + 
-#                 f"seed_list {opt.seed_list}, metric {opt.metric} perf: {opt.perf_pc} % " + 
-#                 f"SSCORE: mean: {ss_mean:.6f}  std: {ss_std:.6f} "+ 
-#                 f"DM compute time {elasp_time:.2f} min")
-
-# np.savez_compressed(os.path.join(res_path, f"{opt.mode}_{opt.split}_{opt.type}_trainnv{opt.nviews_train:02}_testnv{opt.nviews_test:02}_{sample_num}.npz"), **sscore_collect)
-    
-
-# proc_logger.info(f"###############END OF {opt.type} PIPELINE#################")
 
 

@@ -101,7 +101,6 @@ logger.info("Exiting Main Thread")
 BASH_COMMAND_LIST = []
 log_base_dir = 'log/train_synthetic'
 split = 'pred'
-
 SEED_LIST = '1'
 nsample=-1
 rsample=1
@@ -112,7 +111,6 @@ perf_pc_list =  '0'        #
 type = 'points'
 pred_batch_size = 64
 res_folder = 'checkpoints_pred'  # 'checkpoints_pred_lastepoch' checkpoints_pred_bestepoch
-network = 'pseudo_network'                   #toydata_lastepoch  toydata_bestepoch
 model = ('atlasnet', 'SPHERE', 1)
 
 trained_exp_dir_lst = glob.glob(join(log_base_dir, "*Epoch*"))

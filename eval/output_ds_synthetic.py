@@ -18,7 +18,6 @@ from model.pseudo_network import Generator
 from eval.metric import ChamferDistanceL2, compute_ptcloud_dismatrix_batch, cluster_eval
 from eval.eval_utils import get_logger, CountFrequency, dic_to_array, mean_std
 import auxiliary.ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as dist_chamfer_3D
-from train_toydata import Trainer
 
 opt = parser()
 ###Mkdir and logger
@@ -52,14 +51,6 @@ for seed_idx in range(num_seed):
             opt.logger.info(f"Reloading Network Weights from {opt.reload_model_path}...")
             network.load_state_dict(torch.load(opt.reload_model_path)['model_state_dict'])
             network.to(opt.device)
-
-        # if opt.network=='pseudo_network':
-        #     proc_logger.info(f"Network {opt.network}: From {os.path.join(opt.trained_exp_dir, 'prediction.npy')}")
-        #     data = np.load(os.path.join(opt.trained_exp_dir, 'prediction.npy'))
-        #     data = torch.from_numpy(data).to(opt.device)
-        #     network = Generator(data, opt.pred_batch_size)
-        # else:
-        #     raise NotImplementedError(f"{opt.network} is not implemented/imported")
     
     if opt.split == "train":
         dataset = ToyDataset(data_base_dir=opt.data_base_dir, 
@@ -102,8 +93,6 @@ for seed_idx in range(num_seed):
                 pred_points = pred_points.view(B, -1, 3)
                 gt_points = batch['points'].to(opt.device)
                 assert gt_points.shape[0] == B, f'gt {gt_points.shape[0]}, while pred {B}'
-                print(gt_points.shape)
-                print(pred_points.shape)
                 if data is None:
                     data = pred_points
                 else:

@@ -3,8 +3,13 @@ import sys
 import signal
 sys.path.append('../')
 from os.path import join
-from training.gputracker import get_logger
+from training.gputracker import get_logger, DispatchThread
 import glob
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--gpus", nargs='+', type=int, default=[0, 1], help="ids of gpu to use")
+args = parser.parse_args()
 
 results_base_dir = "eval/eval_results"
 trained_log_dir = "log/more_shapes"
@@ -14,7 +19,7 @@ BASH_COMMAND_LIST = []
 #######################################################################################
 SEED_LIST = '1'
 nsample=-1
-rsample=1
+rsample=0.1
 c_method_list = 'KMedoids'        
 e_method_list = 'Inertia' 
 cluster_k = '500'                              
@@ -40,7 +45,7 @@ BASH_COMMAND_LIST.append("python eval/input_ds.py --SVR " \
                                     f"--e_method {e_method_list} " \
                                     f"--cluster_k {cluster_k} " \
                                     f"--perceptual " \
-                                    f"--res_folder 'checkpoints_{rsample}' " \
+                                    f"--res_folder 'checkpoints_input' " \
                                     f"--metric 'mse' " \
                                     f"--trained_exp_dir '' ")
         
@@ -66,14 +71,14 @@ for mode in MODE_LIST:
                                         f"--e_method {e_method_list} " \
                                         f"--cluster_k {cluster_k} " \
                                         f"--perceptual " \
-                                        f"--res_folder 'checkpoints_{rsample}' " \
+                                        f"--res_folder 'checkpoints_input' " \
                                         f"--metric 'chamfer' " \
                                         f"--trained_exp_dir '' ")
 
 
 ####################### Output DS of Pred points ####################
 #####################################################################
-trained_folder_list = glob.glob(join(trained_log_dir, '*'))                       
+trained_folder_list = glob.glob(join(trained_log_dir, '*_seed*'))                       
 split='pred'                                                       
 for trained_folder in trained_folder_list:
     BASH_COMMAND_LIST.append("python eval/output_ds_viewer_inv.py --SVR " \
@@ -98,13 +103,15 @@ for trained_folder in trained_folder_list:
                                 f"--res_folder 'checkpoints_pred' " \
                                 f"--trained_exp_dir {trained_folder} ")
 
-for command in BASH_COMMAND_LIST:
-    logger.info(f"Launching Experiments: {command}")
-    os.system(command)
-    # sleep 5 seconds 
-    code = os.system('sleep 5')
 
-    if code == signal.SIGINT:
-        logger.info('Keyboard Interpret')
-        break
+dispatch_thread = DispatchThread("shapenet more imgs ds evaluations", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
+
+import time
+time.sleep(5)
+
+logger.info("Exiting Main Thread")
 

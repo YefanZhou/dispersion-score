@@ -2,11 +2,8 @@ import torch
 import torch.optim as optim
 import auxiliary.my_utils as my_utils
 import json
-import auxiliary.visualization as visualization
 from os.path import join, exists
-from os import mkdir
 import auxiliary.meter as meter
-from termcolor import colored
 import time
 
 
