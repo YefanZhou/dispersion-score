@@ -1,9 +1,7 @@
 import torch
-#from auxiliary.my_utils import weights_init
 from model.model import EncoderDecoder
-from model.baseline_models import SVR_Baseline, SVR_AtlasNet, SVR_AtlasNet_SPHERE, PSGN, FoldNet
+from model.baseline_models import PSGN, FoldNet
 import torch.optim as optim
-import numpy as np
 import torch.nn as nn
 from copy import deepcopy
 import os
@@ -103,9 +101,3 @@ class TrainerModel(object):
             except:
                 self.opt.logger.info(f"Failed to reload optimizer {self.opt.reload_optimizer_path}")
 
-        # Set policy for warm-up if you use multiple GPUs
-        # self.next_learning_rates = []
-        # if len(self.opt.multi_gpu) > 1:
-        #     self.next_learning_rates = np.linspace(self.opt.lrate, self.opt.lrate * len(self.opt.multi_gpu),
-        #                                            5).tolist()
-        #     self.next_learning_rates.reverse()
