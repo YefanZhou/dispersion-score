@@ -2,9 +2,9 @@
 
 Official implementation of 3DV 2021 Paper *A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks* 
 
-Dispersion Score is a data-driven metric that is used to measure the internel machaism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose training data and work as a heuristic to guide data augmentation. 
+Dispersion Score is a data-driven metric that is used to measure the internel machaism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose training data and guide data augmentation as a heuristic.
 
-For more details, please see: PDF VIDEO
+For more details, please see our paper.
 
 ## Installation
 
