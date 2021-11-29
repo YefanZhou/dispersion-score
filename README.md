@@ -1,8 +1,10 @@
 # dispersion-score
 
+Official implementation of 3DV 2021 Paper *A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks* 
 
+Dispersion Score is a data-driven metric that is used to measure the internel machaism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose training data and work as a heuristic to guide data augmentation. 
 
-Official implementation of our 3DV Paper *A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks* 
+For more details, please see: PDF VIDEO
 
 ## Installation
 
@@ -37,7 +39,9 @@ unzip ShapeNetV1PointCloud.zip -d ./dataset/data/
 unzip ShapeNetV1Renderings.zip -d ./dataset/data/
 ```
 
-## Experiments
+
+
+## Experiments Results
 
 Download our trained models:
 
@@ -85,7 +89,7 @@ python eval_scripts/eval_ds_moreimgs.py --gpus [IDS OF GPUS TO USE]
 python eval_scripts/eval_ds_moreshapes.py --gpus [IDS OF GPUS TO USE] 
 ```
 
-Run the to visualize the results and reproduce plots. 
+Run the [notebook](https://github.com/YefanZhou/dispersion-score/blob/main/plot_scripts/shapenet_results.ipynb) to visualize the results and reproduce plots. 
 
 #### Model Training
 
