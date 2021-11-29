@@ -4,7 +4,7 @@ Official implementation of 3DV 2021 Paper *A Dataset-dispersion Perspective on R
 
 Dispersion Score is a data-driven metric that is used to measure the internel machaism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose training data and guide data augmentation as a heuristic.
 
-For more details, please see our paper.
+For more details, please see our [paper](https://github.com/YefanZhou/dispersion-score/blob/main/pdf/PaperID152_for_3DV2021_eXpress.pdf).
 
 ## Installation
 
