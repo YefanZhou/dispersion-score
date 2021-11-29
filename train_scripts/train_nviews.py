@@ -1,9 +1,13 @@
 import os
 import sys
-import signal
+import argparse
 sys.path.append('../')
-from training.gputracker import get_logger
 
+from training.gputracker import get_logger, DispatchThread
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--gpus", nargs='+', type=int, default=[0, 1], help="ids of gpu to use")
+args = parser.parse_args()
 ###################################################################################################
 #############################ShapeNet 13 AtlasNet Views Search FIXED EVAL ######################################
 
@@ -41,15 +45,15 @@ for SEED in SEED_LIST:
                                             f"--nviews_train {train_nviews} " \
                                             f"--nviews_test {TEST_VIEWS} " \
                                             f"--description '{mode}_{model[0]}{model[1]}{model[2]}_decy{decay_idx}_trainnv{train_nviews}_testnv{TEST_VIEWS}_seed{SEED}_fixed_eval'")
-print(BASH_COMMAND_LIST)
-for command in BASH_COMMAND_LIST:
-    
-    logger.info(f"Launching Experiments: {command}")
-    os.system(command)
 
-    # sleep 5 seconds 
-    code = os.system('sleep 5')
 
-    if code == signal.SIGINT:
-        logger.info('Keyboard Interpret')
-        break
+dispatch_thread = DispatchThread("shapenet more imgs ds evaluations", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=5)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
+
+import time
+time.sleep(5)
+
+logger.info("Exiting Main Thread")

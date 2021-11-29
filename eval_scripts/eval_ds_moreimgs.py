@@ -24,12 +24,11 @@ split_list=['train']                             # 'train'
 SEED_LIST = '1'
 YAWRANGE_LIST = [0, 15, 30, 45, 60, 75, 90]      # 
 nsample=-1
-rsample=0.1
+rsample=1
 c_method_list = 'KMedoids'  #KMedoids KMedoids
 e_method_list = 'Inertia' #  Inertia Inertia
 cluster_k = '500'  # 
 perf_pc_list = '0' #  
-'''
 for YAWRANGE in YAWRANGE_LIST:
     for mode in mode_list:
         for split in split_list:
@@ -90,7 +89,7 @@ BASH_COMMAND_LIST.append("python eval/input_ds_aug.py --SVR " \
 ########################Ouput DS of Predicted Points################
 #####################################################################
 ## Object centered
-'''
+
 trained_folder_lst = glob.glob(join(trained_log_dir, '*_yawrange*'))
 YAWRANGE = 90
 split='pred'
@@ -119,7 +118,7 @@ for trained_folder in trained_folder_lst:
 
 
 dispatch_thread = DispatchThread("shapenet more imgs ds evaluations", 
-                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=5)
 # Start new Threads
 dispatch_thread.start()
 dispatch_thread.join()

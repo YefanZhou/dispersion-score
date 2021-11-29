@@ -19,7 +19,7 @@ BASH_COMMAND_LIST = []
 #######################################################################################
 SEED_LIST = '1'
 nsample=-1
-rsample=0.1
+rsample=1
 c_method_list = 'KMedoids'        
 e_method_list = 'Inertia' 
 cluster_k = '500'                              
@@ -105,7 +105,7 @@ for trained_folder in trained_folder_list:
 
 
 dispatch_thread = DispatchThread("shapenet more imgs ds evaluations", 
-                 BASH_COMMAND_LIST, logger, gpu_m_th=8000, gpu_list=args.gpus, maxcheck=0)
+                 BASH_COMMAND_LIST, logger, gpu_m_th=500, gpu_list=args.gpus, maxcheck=5)
 # Start new Threads
 dispatch_thread.start()
 dispatch_thread.join()

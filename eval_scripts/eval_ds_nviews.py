@@ -3,14 +3,18 @@ import sys
 import signal
 sys.path.append('../')
 from os.path import join
-from training.gputracker import get_logger
+import argparse
+from training.gputracker import get_logger, DispatchThread
 import glob
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--gpus", nargs='+', type=int, default=[0, 1], help="ids of gpu to use")
+args = parser.parse_args()
 ##########################Output DS of Views Search #############################
 #################################################################################
 BASH_COMMAND_LIST = []
 nsample=-1
-rsample=1
+rsample=0.1
 mode='viewer'
 results_base_dir = "eval/eval_results"
 trained_log_dir = "log/nviews"
@@ -51,15 +55,14 @@ for trained_folder in trained_folder_lst:
                                 f"--res_folder 'checkpoints_pred' "
                                 f"--trained_exp_dir {trained_folder} ")
 
-BASH_COMMAND_LIST.sort()
 
-for command in BASH_COMMAND_LIST[-1:]:
-    
-    logger.info(f"Launching Experiments: {command}")
-    os.system(command)
-    # sleep 5 seconds 
-    code = os.system('sleep 5')
+dispatch_thread = DispatchThread("shapenet more imgs ds evaluations", 
+                 BASH_COMMAND_LIST, logger, gpu_m_th=9000, gpu_list=args.gpus, maxcheck=0)
+# Start new Threads
+dispatch_thread.start()
+dispatch_thread.join()
 
-    if code == signal.SIGINT:
-        logger.info('Keyboard Interpret')
-        break
+import time
+time.sleep(5)
+
+logger.info("Exiting Main Thread")

@@ -24,81 +24,79 @@ chmod +x setup.sh
 
 ## Dataset
 
-Synthetic dataset: you may download the provided data as following or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/synthetic_data).
+Download provided synthetic dataset and customized ShapeNet renderings as following, or you may [build synthetic dataset](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/synthetic_data) or [build renderings](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/data) yourself.
 
 ```bash
-bash dataset/download_synthetic_data.sh
+bash download/download_data.sh
 ```
 
-ShapeNet V1 (AtlasNet version): [pointclouds](https://drive.google.com/file/d/1MMCYOqSalz77dduKahqDEQKFP9aCvUCy/view?usp=sharing), [renderings](https://drive.google.com/file/d/153nd1oUd5ONnP8AoXaU8IZunskd5LEvB/view?usp=sharing)  
-
-ShapeNet V1 [customized renderings](https://drive.google.com/file/d/1Y2nAktYbeRJ23bhjqZp3c4kh5P8oBYdp/view?usp=sharing). You may download the provided data as following or [build it yourself](https://github.com/YefanZhou/dispersion-score/tree/main/dataset/data).
-
-Manually download the three files to main folder.
+Manually download ShapeNet V1 (AtlasNet version): [pointclouds](https://drive.google.com/file/d/1MMCYOqSalz77dduKahqDEQKFP9aCvUCy/view?usp=sharing), [renderings](https://drive.google.com/file/d/153nd1oUd5ONnP8AoXaU8IZunskd5LEvB/view?usp=sharing) , and unzip the two files as following.
 
 ```bash
 unzip ShapeNetV1PointCloud.zip -d ./dataset/data/
 unzip ShapeNetV1Renderings.zip -d ./dataset/data/
-unzip ShapeNetV1RenderingAnglelimit.zip -d ./dataset/data/
 ```
 
-## Experiments on Synthetic datasets:
+## Experiments
 
-### Model Training 
-
-Train models on 16 train sets of synthetic datasets.
+Download our trained models:
 
 ```bash
-python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
+bash download/download_checkpts.sh
 ```
 
-You may also download our [trained models](https://drive.google.com/file/d/1h3mZUMueGfrhPTZo1BoNNYLyPymlpZb7/view?usp=sharing).
 
-```bash
-mkdir -p log/train_synthetic
-unzip toydata_checkpoints.zip -d ./log/train_synthetic/
-```
 
-### Measure Dispersion Score (DS)
+### Experiments on Synthetic datasets:
+
+#### Measure Dispersion Score (DS) and Visualize Measurements
 
 ```bash
 python eval_scripts/eval_ds_synthetic.py --gpus [IDS OF GPUS TO USE]
 ```
 
-### Visualize the Results
+Run the [notebook](https://github.com/YefanZhou/dispersion-score/blob/main/plot_scripts/synthetic_dataset.ipynb) to visualize the results and reproduce plots. 
 
-Run the [notebook](https://github.com/YefanZhou/dispersion-score/blob/main/plot_scripts/synthetic_dataset.ipynb).
+#### Model Training
 
-## Experiments on ShapeNet:
-
-### Model Training and Measure Dispersion Score (DS)
-
-- More dispersed training Images 
+You could also train models from scratch as following instead of using trained models.
 
 ```bash
-## Training: Checkpoints saved to 'log/more_imgs'
-python -m train_cmd.train_more_imgs
-## Evaluation of DS, chamfer
-python -m eval_cmd.eval_ds_moreimgs
+python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
 ```
 
-- More dispersed training shapes
+
+
+------
+
+
+
+### Experiments on ShapeNet:
+
+#### Measure Dispersion Score (DS) and Visualize Measurements
 
 ```bash
-## Checkpoints saved to 'log/more_shapes'
-python -m train_cmd.train_more_shapes
-## Evaluation of DS, chamfer
-python -m eval_cmd.eval_ds_moreshapes
+# More dispersed training Images 
+python eval_scripts/eval_ds_moreimgs.py --gpus [IDS OF GPUS TO USE]
 ```
-
-- More training samples
 
 ```bash
-## Checkpoints saved to 'log/nviews'
-python -m train_cmd.train_nviews
-## Evaluation of DS, chamfer
-python -m eval_cmd.eval_ds_nviews
+# More dispersed training shapes 
+python eval_scripts/eval_ds_moreshapes.py --gpus [IDS OF GPUS TO USE] 
 ```
+
+Run the to visualize the results and reproduce plots. 
+
+#### Model Training
+
+You could also train models from scratch as following instead of using trained models.
+
+```bash
+python train_scripts/train_more_imgs.py --gpus [IDS OF GPUS TO USE]
+python train_scripts/train_more_shapes.py --gpus [IDS OF GPUS TO USE]
+```
+
+
 
 
 
