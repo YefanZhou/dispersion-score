@@ -4,7 +4,7 @@
 
 [Paper (Arxiv)](https://arxiv.org/abs/2111.15158)
 
-![github_twitter_demo](../../../../Documents/TyporaImage/github_twitter_demo.png)
+![github_twitter_demo](https://github.com/YefanZhou/dispersion-score/blob/main/figs/github_twitter_demo.png)
 
 
 
