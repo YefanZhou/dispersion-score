@@ -1,10 +1,14 @@
-# dispersion-score
+#A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks [3DV 2021]
 
-Official implementation of 3DV 2021 Paper *A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks* 
+**[Yefan Zhou](https://yefanzhou.github.io/), [Yiru Shen](https://scholar.google.com/citations?hl=en&user=-_Hy9z0AAAAJ), [Yujun Yan](https://scholar.google.com/citations?hl=en&user=5TQUP58AAAAJ), [Chen Feng](https://scholar.google.com/citations?hl=en&user=YeG8ZM0AAAAJ), [Yaoqing Yang](https://scholar.google.com/citations?user=LYvugWgAAAAJ&hl=en)**
+
+[Paper (Arxiv)](https://arxiv.org/abs/2111.15158)
+
+![github_twitter_demo](../../../../Documents/TyporaImage/github_twitter_demo.png)
+
+
 
 Dispersion Score is a data-driven metric that is used to measure the internel machaism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose training data and guide data augmentation as a heuristic.
-
-For more details, please see our [paper](https://github.com/YefanZhou/dispersion-score/blob/main/pdf/PaperID152_for_3DV2021_eXpress.pdf).
 
 ## Installation
 
@@ -73,8 +77,6 @@ python train_scripts/train_synthetic.py --gpus [IDS OF GPUS TO USE]
 
 ------
 
-
-
 ### Experiments on ShapeNet:
 
 #### Measure Dispersion Score (DS) and Visualize Measurements
@@ -102,7 +104,16 @@ python train_scripts/train_more_shapes.py --gpus [IDS OF GPUS TO USE]
 
 
 
-
+## Citation
+We appreciate it if you would please cite the following paper if you found the repository useful for your work:
+```
+@article{zhou2021dataset,
+  title={A Dataset-Dispersion Perspective on Reconstruction Versus Recognition in Single-View 3D Reconstruction Networks},
+  author={Zhou, Yefan and Shen, Yiru and Yan, Yujun and Feng, Chen and Yang, Yaoqing},
+  journal={arXiv preprint arXiv:2111.15158},
+  year={2021}
+}
+```
 
 
 
