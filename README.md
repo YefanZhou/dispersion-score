@@ -10,7 +10,7 @@
 
 
 
-Dispersion Score is a data-driven metric that is used to measure the internel machaism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose training data and guide data augmentation as a heuristic.
+Dispersion Score is a data-driven metric that is used to measure the internel mechanism of single-view 3D reconstruction network: the tendency of network to perform recognition or reconstruction. It can also be used to diagnose problems from the training data and guide the design of data augmentation schemes.
 
 ## Installation
 
@@ -107,7 +107,7 @@ python train_scripts/train_more_shapes.py --gpus [IDS OF GPUS TO USE]
 
 
 ## Citation
-We appreciate it if you would please cite the following paper if you found the repository useful for your work:
+If you find the repository useful for your work, please cite our paper.
 ```
 @article{zhou2021dataset,
   title={A Dataset-Dispersion Perspective on Reconstruction Versus Recognition in Single-View 3D Reconstruction Networks},
