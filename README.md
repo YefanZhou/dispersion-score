@@ -4,7 +4,7 @@
 
 [Paper (Arxiv)](https://arxiv.org/abs/2111.15158)
 
-**SVR models can be disposed towards recognition (classification-based) or reconstruction by changing the dispersion extent of training data.**
+**A SVR model can be disposed towards recognition (classification-based) or reconstruction depending on how dispersed the training data becomes.**
 
 ![github_twitter_demo](https://github.com/YefanZhou/dispersion-score/blob/main/figs/github_twitter_demo.png)
 
