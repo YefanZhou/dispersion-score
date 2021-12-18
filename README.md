@@ -1,4 +1,4 @@
-# A Dataset-dispersion Perspective on Reconstruction versus Recognition in Single-view 3D Reconstruction Networks [3DV 2021]
+# A Dataset-Dispersion Perspective on Reconstruction versus Recognition in Single-View 3D Reconstruction Networks [3DV 2021]
 
 **[Yefan Zhou](https://yefanzhou.github.io/), [Yiru Shen](https://scholar.google.com/citations?hl=en&user=-_Hy9z0AAAAJ), [Yujun Yan](https://scholar.google.com/citations?hl=en&user=5TQUP58AAAAJ), [Chen Feng](https://scholar.google.com/citations?hl=en&user=YeG8ZM0AAAAJ), [Yaoqing Yang](https://scholar.google.com/citations?user=LYvugWgAAAAJ&hl=en)**
 
