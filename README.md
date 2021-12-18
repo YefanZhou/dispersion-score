@@ -106,6 +106,10 @@ python train_scripts/train_more_shapes.py --gpus [IDS OF GPUS TO USE]
 
 
 
+The code is built on top of [AtlasNet](https://github.com/ThibaultGROUEIX/AtlasNet).
+
+
+
 ## Citation
 If you find the repository useful for your work, please cite our paper.
 ```
