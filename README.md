@@ -113,11 +113,20 @@ The code is built on top of [AtlasNet](https://github.com/ThibaultGROUEIX/AtlasN
 ## Citation
 If you find the repository useful for your work, please cite our paper.
 ```
-@article{zhou2021dataset,
-  title={A Dataset-Dispersion Perspective on Reconstruction Versus Recognition in Single-View 3D Reconstruction Networks},
-  author={Zhou, Yefan and Shen, Yiru and Yan, Yujun and Feng, Chen and Yang, Yaoqing},
-  journal={arXiv preprint arXiv:2111.15158},
-  year={2021}
+@INPROCEEDINGS {9665835,
+author = {Y. Zhou and Y. Shen and Y. Yan and C. Feng and Y. Yang},
+booktitle = {2021 International Conference on 3D Vision (3DV)},
+title = {A Dataset-Dispersion Perspective on Reconstruction Versus Recognition in Single-View 3D Reconstruction Networks},
+year = {2021},
+volume = {},
+issn = {},
+pages = {1331-1340},
+keywords = {training;three-dimensional displays;image recognition;systematics;shape;training data;artificial neural networks},
+doi = {10.1109/3DV53792.2021.00140},
+url = {https://doi.ieeecomputersociety.org/10.1109/3DV53792.2021.00140},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month = {dec}
 }
 ```
 
